@@ -6,3 +6,10 @@
 
 mod lang_items;
 
+use core::arch::global_asm;
+// mixin asm file as str and rust compilor can compile it
+global_asm!(include_str!("entry.asm"));
+
+
+
+

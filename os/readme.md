@@ -19,3 +19,8 @@ rust-readobj -h target/riscv64gc-unknown-none-elf/debug/os
 ```
 rust-objdump -S target/riscv64gc-unknown-none-elf/debug/os
 ```
+
+# generated release file
+```
+cargo build --release
+```
