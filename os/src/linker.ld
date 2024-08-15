@@ -39,6 +39,7 @@ SECTIONS
     erodata = .;
     sdata = .;
     .data : {
+        *(.data.stack)
         *(.data .data.*)
         *(.sdata .sdata.*)
     }
@@ -46,7 +47,6 @@ SECTIONS
     . = ALIGN(4K);
     edata = .;
     .bss : {
-        *(.bss.stack)
         sbss = .;
         *(.bss .bss.*)
         *(.sbss .sbss.*)
