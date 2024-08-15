@@ -4,3 +4,6 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
+# has interface to sbi service
+# serial read and write belong to legacy feature
+sbi-rt = {version="0.0.3",features=["legacy"]}
