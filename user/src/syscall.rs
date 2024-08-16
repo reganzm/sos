@@ -3,8 +3,6 @@ use core::arch::asm;
 const SYSCALL_WRITE: usize = 64;
 const SYSCALL_EXIT: usize = 93;
 
-
-
 ///at U model  use `ecall` to trap into S model
 /// x10 store system call number
 

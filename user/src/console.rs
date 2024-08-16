@@ -3,8 +3,6 @@ use core::fmt::{self, Write};
 
 struct Stdout;
 
-
-
 // standard output
 const STDOUT: usize = 1;
 

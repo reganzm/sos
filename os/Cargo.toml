@@ -7,3 +7,5 @@ edition = "2021"
 # has interface to sbi service
 # serial read and write belong to legacy feature
 sbi-rt = {version="0.0.3",features=["legacy"]}
+lazy_static = {version="1.4.0", features=["spin_no_std"]}
+riscv  = {git="https://github.com/rcore-os/riscv",features=["inline-asm"]}

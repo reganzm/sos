@@ -2,9 +2,13 @@
 // tell compiler there is no std libs
 #![no_std]
 
+mod batch;
 mod console;
 mod lang_items;
 mod sbi;
+mod sync;
+mod syscall;
+mod trap;
 
 use core::arch::global_asm;
 // mixin asm file as str and rust compilor can compile it
