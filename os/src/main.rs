@@ -18,12 +18,19 @@ pub fn rust_main() -> ! {
 }
 
 fn clear_bss() {
-    // call externel c function
+    // call externel c function. this is a "C" convention
+    // use linker script varaible throuth extern "C" func
+    // extern "C" {
+    //     fn sbss();
+    //     fn ebss();
+    // }
     extern "C" {
-        fn sbss();
-        fn ebss();
+        static mut sbss: usize;
+        static mut ebss: usize;
     }
     // compilor will search globle symbol , that provided by link script linker.ld
     // sbss point to .sbss , ebss point to .ebss
-    (sbss as usize..ebss as usize).for_each(|e| unsafe { (e as *mut u8).write_volatile(0) })
+    //(sbss as usize..ebss as usize).for_each(|e| unsafe { (e as *mut u8).write_volatile(0) })
+    // another way
+    unsafe { (sbss..ebss).for_each(|e| (e as *mut u8).write_volatile(0)) }
 }
