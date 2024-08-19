@@ -1,6 +1,17 @@
 [package]
-name = "blog_os_64"
+name = "blog_os"
 version = "0.1.0"
 edition = "2021"
 
 [dependencies]
+rlibc = "1.0"
+
+[lib]
+crate-type=["staticlib"]
+
+
+[profile.dev]
+panic="abort"
+
+[profile.release]
+panic="abort"
