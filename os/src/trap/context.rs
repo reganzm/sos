@@ -3,8 +3,8 @@ use riscv::register::sstatus::{self, Sstatus, SPP};
 #[repr(C)]
 pub struct TrapContext {
     pub x: [usize; 32],   // general regs[0..31]
-    pub sstatus: Sstatus, //CSR sstatus
-    pub sepc: usize,      //CSR sepc
+    pub sstatus: Sstatus, //CSR sstatus : SPP field modified current Privilege
+    pub sepc: usize,      //CSR sepc: s mode exit program counter
 }
 
 impl TrapContext {
