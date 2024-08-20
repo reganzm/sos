@@ -15,7 +15,8 @@ long_mode_start:
     mov gs,ax
 
 
-    
+    ;call the rust rust_main
+    call rust_main
 
 
 
