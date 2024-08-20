@@ -5,6 +5,7 @@ section .text
 bits 32
 start:
     mov esp,stack_top ; update stack pointer
+    mov edi,ebx; multiboot bootloader loads a kernel,it pass a pointer to a boot info structure in the ebx register
     call check_multiboot
     call check_cpuid
     call check_long_mode
@@ -43,7 +44,7 @@ p2_table:
 
 ;setup stack
 stack_bottom:
-    resb 64
+    resb 4096*4 ; 16Kb
 stack_top;
 
 
