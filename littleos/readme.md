@@ -47,3 +47,15 @@ could encounter error,maybe helpful
 sudo apt install -y bochsbios
 sudo apt install -y vgabios
 ```
+
+
+### resolve problom
+```
+if encoured any problom about bochs's, you can reinstall boch from source.
+that all! good luck! 
+```
+
+### use make clean/run
+```
+you can use make run to start bochs to emulate the little os!
+```

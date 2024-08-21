@@ -27,7 +27,7 @@ loader: ; the loader label (defined as entry point in linker script)
     mov eax, 0xCAFEBABE ; place the number 0xCAFEBABE in the register eax
     mov esp,kernel_stack+KERNEL_STACK_SIZE
     extern fb_move_cursor
-    push 162;
+    push 162 ; move cusor to 2 lines and 2 columns:[2,2] which index all start from 0
     call fb_move_cursor
 
 
