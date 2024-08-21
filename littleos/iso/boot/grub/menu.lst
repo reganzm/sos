@@ -1,5 +1,5 @@
 default=0
 timeout=0
 
-title little_os
+title os
 kernel /boot/kernel.elf 
