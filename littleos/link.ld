@@ -4,6 +4,7 @@ SECTIONS {
     . = 0x00100000; /* the code should be loaded at 1 MB */
     .text ALIGN (0x1000) : /* align at 4 KB */
     {
+        *(.entry.text)
         *(.text) /* all text sections from all files */
     }
     .rodata ALIGN (0x1000) : /* align at 4 KB */
@@ -16,6 +17,7 @@ SECTIONS {
     }
     .bss ALIGN (0x1000) : /* align at 4 KB */
     {
+        *(.entry.bss)
         *(COMMON) /* all COMMON sections from all files */
         *(.bss) /* all bss sections from all files */
     }
