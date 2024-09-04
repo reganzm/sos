@@ -31,7 +31,7 @@ os.iso:kernel.elf
 				iso
 
 run :os.iso
-	bochs -f bochsrc.txt -q
+	/home/oslab/bochs/bin/bochs -f bochsrc.txt -q
 
 %.o : %.c
 	$(CC) $(CFLAGS) $< -o $@
