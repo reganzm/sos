@@ -1,0 +1,9 @@
+# -ggdb 启用gdb调试
+gcc -c -ggdb a.S
+# -e 指定入口
+ld -e main a.o
+# 反汇编
+objdump -d a.out
+
+# 打印上一个命令的返回值
+echo $? 
