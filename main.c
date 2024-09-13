@@ -1,9 +1,8 @@
+#include "include/print.h"
+
+
 int main(){
-    __asm__(
-    "mov $0x3f8,%dx \n\t"
-    "mov $'M',%ax \n\t"
-    "out %ax,%dx \n"
-    );
+    print('6');
 
     __asm__("hlt");
 }

@@ -3,9 +3,27 @@
 
 start16:
     cli
-
     //load gdt
     lgdt gdtr
+
+    // read E820 memory segment info 
+    // save at pv 0x13000
+    // E820 entry are 20byte 
+    // first 8bytes are base pv address
+    // second 8bytes are segment length
+    // third 4bytes are segment type
+
+    mov $e820_entry,%di
+    xor %ebx,%ebx
+e820_rd_entry:
+    mov $0xe820,%eax
+    mov $20,%ecx
+    int $0x15
+    incb e820_nr_entry
+    add $20,%di
+    cmp $0,%ebx
+    jne e820_rd_entry
+
 
     //open protect model
     mov %cr0,%eax
@@ -31,3 +49,10 @@ gdtr:
     .word gdt_end - gdt
     //addr = cs:gdt , cs=0x1000 << 4
     .word gdt,0x1 
+
+.org 0x3000
+e820_nr_entry:
+    .long 0
+
+e820_entry:
+    .fill 1024,1,0
