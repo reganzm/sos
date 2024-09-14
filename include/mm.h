@@ -37,5 +37,6 @@ struct e820map{
 uint64_t alloc_page();
 void free_page(uint64_t pa);
 void mm_init();
-
+void* malloc(uint32_t size);
+void free(void* va);
 void map_range(uint64_t pml4_pa,uint64_t from_va,uint64_t from_pa,char privilege,uint64_t npages);

@@ -1,4 +1,4 @@
-kernel.bin: build boot16.bin boot32.bin system.bin
+kernel.bin: build boot16.bin boot32.bin system.bin apps/app1.bin
 	./build
 
 boot16.bin:boot16.o
@@ -18,7 +18,7 @@ boot32.bin:boot32.o
 # so the instruct va is change to high address
 CFLAGS = -std=c11 -I. -fno-pic -mcmodel=kernel -fno-stack-protector -fcf-protection=none -nostdinc -fno-builtin
 
-SRCS = main.c $(wildcard mm/*.c) $(wildcard lib/*.c)
+SRCS = main.c $(wildcard mm/*.c) $(wildcard lib/*.c) $(wildcard kernel/*.c)
 OBJS = $(SRCS:.c=.o)
 
 
@@ -37,6 +37,14 @@ include .depend
 
 build:build.c
 	gcc $< -o $@
+
+
+
+apps/app1.bin:apps/app1.S
+	gcc -c apps/app1.S -o apps/app1.o
+	ld -Ttext=0x100000 apps/app1.o -o apps/app1.elf
+	objcopy -O binary apps/app1.elf apps/app1.bin
+
 
 
 .PHONY:clean run
