@@ -42,6 +42,15 @@ start32:
     cmp $(0x33000 + 512 * 32 * 8 -8),%edi
     jle 2b
 
+    mov $0x56000,%edi
+    mov $0x33000 + 3,%eax
+3:
+    stosl
+    add $0x1000,%eax
+    add $0x4,%edi
+    cmp $(0x56000 + 32 * 8 -8),%edi
+    jle 3b
+
     // 1.open the 64bit model
     // enable PAE(physical address extension)
     mov %cr4,%eax
@@ -94,7 +103,9 @@ gdtr:
 pml4:
     // for dentically equal mapping
     .quad 0x0000000000053003
-    .fill 510,8,0
+    .fill 272,8,0
+    .quad 0x0000000000055003
+    .fill 237,8,0
     // level4 page table at 31000 pysical address
     // 3 = 011 
     // kernel|enable read/write|exists 
@@ -135,3 +146,19 @@ dentical_map_pml2:
 dentical_map_pml1:
     .quad 0x0000000000033003
     .fill 511,8,0
+
+
+.org 0x35000
+ram_pm3:
+    .quad 0x0000000000056003
+    .fill 511,8,0
+
+.org 0x36000
+ram_pm2:
+    .fill 32,8,0
+    .quad 0x0000000000057003
+    .fill 479,8,0
+
+.org 0x37000
+ram_pm1:
+    .fill 512,8,0

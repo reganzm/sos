@@ -31,8 +31,8 @@ system.bin:head64.o  $(OBJS)
 
 
 .depend:$(SRCS)
-	@rm -f .depend
-	@$(foreach src,$(SRCS),echo -n $(dir $(src)) >> .depend;gcc -I. -MM $(src) >> .depend;)
+	rm -f .depend
+	$(foreach src,$(SRCS),echo -n $(dir $(src)) >> .depend;gcc -I. -MM $(src) >> .depend;)
 include .depend
 
 build:build.c
@@ -42,7 +42,7 @@ build:build.c
 .PHONY:clean run
 
 run:kernel.bin
-	lkvm run -c 1 -k ./kernel.bin
+	lkvm run -m 512M -c 1 -k ./kernel.bin
 
 clean:
 	find -name "*.o" -o -name "*.elf" -o -name "*.bin" | xargs rm -f
