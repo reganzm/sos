@@ -10,3 +10,5 @@
 #define USER_DS  0x23
 // 101 0 11
 #define USER64_CS  0x2b
+
+#define GDT_TSS_ENTRY 6

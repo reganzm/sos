@@ -2,12 +2,35 @@
 #include "include/types.h"
 #include "include/mm.h"
 #include "include/string.h"
+#include "include/segment.h"
 
 static struct process* process_head;
 static struct process* process_tail;
 
 struct process* current;
 
+static void fake_task_stack(uint64_t kstack){
+    uint16_t ss = USER_DS;
+    // the app stack point
+    uint64_t rsp = 0x8000000;
+    uint16_t cs = USER64_CS;
+
+    uint64_t rip = 0x100000;
+
+    uint64_t rsp_tmp;
+
+    __asm__("mov %%rsp,%5\n\t"
+    "mov %4,%%rsp\n\t"
+    "pushq %0\n\t"
+    "pushq %1\n\t"
+    "pushf\n\t"
+    "pushq %2\n\t"
+    "pushq %3\n\t"
+    "mov %5,%%rsp\n\t"
+    :
+    :"m"(ss),"m"(rsp),"m"(cs),"m"(rip),"m"(kstack),"m"(rsp_tmp)
+    );
+}
 
 static void new_process(uint64_t pid,uint64_t va_entry,uint64_t pa_entry){
     struct process* p = malloc(sizeof(struct process));
@@ -22,7 +45,11 @@ static void new_process(uint64_t pid,uint64_t va_entry,uint64_t pa_entry){
     // user page
     map_range(p->pml4,va_entry,pa_entry,0x4,1024);// 4Mb
 
-    p->kstack = (uint64_t)VA(alloc_page())+PAGE_SIZE;
+    p->kstack = (uint64_t)(VA(alloc_page())+PAGE_SIZE);
+
+    fake_task_stack(p->kstack);
+    p->rsp0 = p->kstack - 8*5;
+    p->rip = (uint64_t)&ret_from_kernel;
     
 
     if(!process_head){
@@ -45,3 +72,5 @@ void sched_init(){
     current = process_head;
 
 }
+
+

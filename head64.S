@@ -3,8 +3,10 @@
 
 .text
 .code64
+// tss should use this symbol
 .globl gdt
 .globl task0_stack
+.globl ret_from_kernel
 into64:
     # print 'L' into serial
     mov $0x3f8,%dx
@@ -28,7 +30,14 @@ start64:
     // jump into main
     ret
     
-
+ret_from_kernel:
+    mov $USER_DS,%rax
+    movw %ax,%ds
+    movw %ax,%es
+    movw %ax,%fs
+    movw %ax,%gs
+    iretq
+    
 gdt:
     .quad 0x0000000000000000 # reserved
     .quad 0x00209a0000000000 # kernel cs
@@ -36,6 +45,7 @@ gdt:
     .quad 0x0000000000000000 # 32bit user cs
     .quad 0x0000f20000000000 # user ds(32bit and 64bit is same , so keep one record)
     .quad 0x0020fa0000000000 # 64bit cs
+    .fill 64 - 6,8,0
 gdt_end:
 
 gdtr:

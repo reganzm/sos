@@ -1,3 +1,4 @@
+#pragma once
 #define print(x) do {\
   int size = sizeof(x);\
   if(size <= 4){\

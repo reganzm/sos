@@ -1,7 +1,7 @@
 #pragma once
 #include "include/types.h"
 extern struct process* current;
-
+extern uint64_t ret_from_kernel;
 
 
 enum process_state{
