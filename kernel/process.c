@@ -12,6 +12,12 @@ static struct process* process_tail;
 struct process* idle_process;
 struct process* current;
 
+
+// dida
+uint64_t ticks;
+struct timer* timer_head;
+struct timer* timer_tail;
+
 static void fake_task_stack(uint64_t kstack){
     uint16_t ss = USER_DS;
     // the app stack point
@@ -85,7 +91,7 @@ void sched_init(){
 
 void schedule(){
     struct process* next = NULL;
-    for(struct process* t= process_head;;t=t->next){
+    for(struct process* t= process_head;t;t=t->next){
         if(t->state ==  RUNNING){
             next = t;
             break;
@@ -103,15 +109,42 @@ void schedule(){
                 :"m"(next->rsp0),"m"(next->rip)\
         );
     }
+    // the cpu will auto use app kernel stack to store context
+    // so must point to app's kernel stack
+    // another usage is use rsp0 auto set rsp when interrupt accor
     tss.rsp0 = (uint64_t)next->kstack;
     current = next;
-    print(current->id);
     __asm__("mov %0,%%cr3"::"a"(next->pml4));
     __asm__("ret");
     __asm__("1:");
 }
 
 void do_timer(){
+    ticks ++ ;
+    // check timer
+    for(struct timer* t=timer_head;t;t=t->next){
+        if(t->alarm <= ticks){
+            t->p->state = RUNNING;
+
+            if(t == timer_head && t == timer_tail){
+                timer_head = NULL;
+                timer_tail = NULL;
+            }else if (t == timer_head)
+            {
+                timer_head = t->next;
+                t->next->prev = NULL;
+            }else if(t == timer_tail){
+                timer_tail = t->prev;
+                t->prev->next = NULL;
+            }else{
+                t->prev->next = t->next;
+                t->next->prev = t->prev;
+            }
+            free(t);
+        }
+    }
+
+
     if (current != idle_process){
         if(current != process_tail){
             if(current->prev){
@@ -133,3 +166,24 @@ void do_timer(){
 }
 
 
+int do_sleep(uint64_t ms){
+    print("S");
+    struct timer* t = malloc(sizeof(struct timer));
+    t->p = current;
+    t->alarm = ticks + ms / 10;// the freq is 100Hz
+    if(!timer_head){
+        timer_head = t;
+        timer_tail = t;
+        t->prev = t->next = NULL;
+    }else{
+        timer_tail->next = t;
+        t->prev = timer_tail;
+        t->next = NULL;
+        timer_tail->next = t;
+    }
+    current->state = INTERRUPTIBLE;
+
+    schedule();
+    return 0;
+
+}

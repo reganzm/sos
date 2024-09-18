@@ -1,9 +1,6 @@
 #pragma once
 #include "include/types.h"
-extern struct process* current;
-extern uint64_t ret_from_kernel;
-extern uint64_t task0_stack;
-extern uint64_t idle_task_entry;
+
 
 enum process_state{
     RUNNING = 0,
@@ -22,5 +19,16 @@ struct process{
     struct process* next;
     struct process* prev;
 };
+struct timer{
+    uint64_t alarm;
+    struct process* p;
+    struct timer* next;
+    struct timer* prev;
+};
 
 void sched_init();
+extern struct process* current;
+extern uint64_t ret_from_kernel;
+extern uint64_t task0_stack;
+extern uint64_t idle_task_entry;
+

@@ -84,7 +84,7 @@ void free(void* va){
 
     for(;bdir->size!=0;bdir++){
         bdesc = bdir->bdesc;
-        for(;;bdesc->next){
+        for(;bdesc;bdesc->next){
             if((uint64_t)bdesc == page){
                 // find it
                 *((uint64_t*)va) = (uint64_t) bdesc->freeptr;

@@ -1,4 +1,4 @@
-kernel.bin: build boot16.bin boot32.bin system.bin apps/app1.bin
+kernel.bin: build boot16.bin boot32.bin system.bin apps/app1.bin apps/app2.bin
 	./build
 
 boot16.bin:boot16.o
@@ -46,11 +46,10 @@ apps/app1.bin:apps/app1.S
 	objcopy -O binary apps/app1.elf apps/app1.bin
 
 
-apps/app1.bin:apps/app2.S
+apps/app2.bin:apps/app2.S
 	gcc -c apps/app2.S -o apps/app2.o
 	ld -Ttext=0x100000 apps/app2.o -o apps/app2.elf
 	objcopy -O binary apps/app2.elf apps/app2.bin
-
 
 
 .PHONY:clean run

@@ -4,10 +4,13 @@
 #include "include/process.h"
 #include "include/tss.h"
 #include "include/interrupt.h"
+#include "include/syscall.h"
 
 int main(){
     mm_init();
     interrupt_init();
+    syscall_init();
+
 
 
     __asm__("sti");
