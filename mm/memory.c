@@ -1,6 +1,7 @@
 #include "include/mm.h"
 #include "include/print.h"
 #include "include/string.h"
+#include "include/process.h"
 
 uint64_t mem_size = 0;
 char pages[MAX_PAGES];
@@ -70,4 +71,10 @@ char privilege,uint64_t npages){
         from_va += PAGE_SIZE;
     }
 
+}
+
+// page fault: allocate a new physic page and create mapping 
+void do_page_fault(uint64_t addr){
+    uint64_t pa = alloc_page();
+    map_range(current->pml4,addr,pa,0x4,1);
 }

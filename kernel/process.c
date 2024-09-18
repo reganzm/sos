@@ -3,6 +3,7 @@
 #include "include/mm.h"
 #include "include/string.h"
 #include "include/segment.h"
+#include "include/print.h"
 
 static struct process* process_head;
 static struct process* process_tail;
@@ -73,4 +74,6 @@ void sched_init(){
 
 }
 
-
+void do_timer(){
+    print('X');
+}

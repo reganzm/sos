@@ -1,3 +1,6 @@
+#define IO_PIC 0x20
+#define IRQ_OFFSET 32
+
 .text
 .code16
 
@@ -23,6 +26,24 @@ e820_rd_entry:
     add $20,%di
     cmp $0,%ebx
     jne e820_rd_entry
+
+
+
+    //init 8259A
+    // ICW1
+    mov $0x13,%al
+    mov $(IO_PIC),%dx
+    out %al,%dx
+    // ICW2
+    mov $(IRQ_OFFSET),%al
+    mov $(IO_PIC+1),%dx
+    out %al,%dx
+
+    // ICW3 skip
+    // ICW4
+    mov $0x1,%al
+    mov $(IO_PIC+1),%dx
+    out %al,%dx
 
 
     //open protect model

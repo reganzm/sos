@@ -24,8 +24,8 @@ OBJS = $(SRCS:.c=.o)
 
 
 
-system.bin:head64.o  $(OBJS)
-	ld -Ttext=0xffffffff80100000 head64.o  $(OBJS) -o system.elf
+system.bin:head64.o kernel/handler.o $(OBJS)
+	ld -Ttext=0xffffffff80100000 head64.o kernel/handler.o $(OBJS) -o system.elf
 	objcopy -O binary system.elf $@
 
 

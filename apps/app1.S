@@ -1,8 +1,10 @@
 .text
 .code64
 1:
-    //print 'A' into serial
+    // the page fault will occor
+    movb $'F',(0x12345678)
+    movb (0x12345678),%al
+
     mov $0x3f8,%dx
-    mov $'A',%al
     out %al,%dx
     jmp 1b

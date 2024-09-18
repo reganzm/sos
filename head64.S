@@ -15,6 +15,7 @@ into64:
 
 start64:
     lgdt gdtr
+    lidt idtr
     # init segment register
     mov $KERNEL_DS,%ax
     mov %ax,%ds
@@ -47,6 +48,10 @@ gdt:
     .quad 0x0020fa0000000000 # 64bit cs
     .fill 64 - 6,8,0
 gdt_end:
+
+idtr:
+    .word 16*256 - 1
+    .quad idt_table
 
 gdtr:
     .word gdt_end - gdt
