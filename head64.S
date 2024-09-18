@@ -7,6 +7,7 @@
 .globl gdt
 .globl task0_stack
 .globl ret_from_kernel
+.globl idle_task_entry
 into64:
     # print 'L' into serial
     mov $0x3f8,%dx
@@ -59,3 +60,10 @@ gdtr:
 
 .fill 4096,1,0
 task0_stack:
+
+
+idle_task_entry:
+1:
+    sti
+    hlt
+    jmp 1b

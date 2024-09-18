@@ -4,10 +4,12 @@
 #include "include/string.h"
 #include "include/segment.h"
 #include "include/print.h"
+#include "include/tss.h"
 
 static struct process* process_head;
 static struct process* process_tail;
 
+struct process* idle_process;
 struct process* current;
 
 static void fake_task_stack(uint64_t kstack){
@@ -32,7 +34,15 @@ static void fake_task_stack(uint64_t kstack){
     :"m"(ss),"m"(rsp),"m"(cs),"m"(rip),"m"(kstack),"m"(rsp_tmp)
     );
 }
-
+void make_idle_task(){
+    struct process* p = malloc(sizeof(struct process));
+    p->id = 0;
+    p->state = RUNNING;
+    p->pml4 = TASK0_PML4;
+    p->kstack = (uint64_t)&task0_stack;
+    p->rsp0 = (uint64_t)&task0_stack;
+    p->rip = (uint64_t)&idle_task_entry;
+}
 static void new_process(uint64_t pid,uint64_t va_entry,uint64_t pa_entry){
     struct process* p = malloc(sizeof(struct process));
     p->id = pid;
@@ -66,14 +76,60 @@ static void new_process(uint64_t pid,uint64_t va_entry,uint64_t pa_entry){
     }
 }
 
-
 void sched_init(){
     new_process(1,0x100000,0xc800000);// va=0x100000(same as Makefile's Ttext) pa=0xc800000(200Mb)
-
+    new_process(2,0x100000,0xd000000);
+    make_idle_task();
     current = process_head;
+}
 
+void schedule(){
+    struct process* next = NULL;
+    for(struct process* t= process_head;;t=t->next){
+        if(t->state ==  RUNNING){
+            next = t;
+            break;
+        }
+    }
+    if(!next){
+        next = idle_process;
+    }
+    if(next != current){
+        __asm__("mov %%rsp,%0\n\t"\
+                "movq $1f,%1\n\t"\
+                "mov %2,%%rsp\n\t"\
+                "push %3\n\t"\
+                :"=m"(current->rsp0),"=m"(current->rip)\
+                :"m"(next->rsp0),"m"(next->rip)\
+        );
+    }
+    tss.rsp0 = (uint64_t)next->kstack;
+    current = next;
+    print(current->id);
+    __asm__("mov %0,%%cr3"::"a"(next->pml4));
+    __asm__("ret");
+    __asm__("1:");
 }
 
 void do_timer(){
-    print('X');
+    if (current != idle_process){
+        if(current != process_tail){
+            if(current->prev){
+                current->prev->next = current->next;
+            }
+            current->next->prev = current->prev;
+
+            current->prev = process_tail;
+            process_tail->next = current;
+
+            if(current == process_head){
+                process_head = current->next;
+            }
+            process_tail = current;
+            current->next = NULL;
+        }
+    }
+    schedule();
 }
+
+

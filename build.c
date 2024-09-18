@@ -60,5 +60,19 @@ int main(){
     }
 
     close(fd);
+
+    // app1.bin at pa 208Mb
+    lseek(fd_kernel,0xd000000-0x10000,SEEK_SET);
+    fd = open("apps/app2.bin",O_RDONLY);
+    while(1){
+        c = read(fd,buf,512);
+        if (c>0){
+            write(fd_kernel,buf,c);
+        }else{
+            break;
+        }
+    }
+
+    close(fd);
     close(fd_kernel);
 }
