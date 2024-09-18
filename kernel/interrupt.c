@@ -7,7 +7,7 @@
 
 
 #define GATE_INTERRUPT 0xe
-#define GATE_EXCEPTION 0Xf
+#define GATE_EXCEPTION 0xf
 #define COUNTER (1193181 / 100)
 
 
@@ -22,7 +22,12 @@ struct gate_desc{
 }__attribute__((packed));
 
 struct gate_desc idt_table[256];
-
+// PIT
+void init_8254(){
+    __asm__("outb %%al,$0x43"::"a"(0x36));
+    __asm__("outb %%al,$0x40"::"a"(COUNTER & 0xff));
+    __asm__("outb %%al,$0x40"::"a"(COUNTER >> 8));
+}
 
 static void set_gate(uint16_t index,uint64_t addr,uint8_t type){
     struct gate_desc* desc = &idt_table[index];
@@ -42,9 +47,3 @@ void interrupt_init(){
     set_gate(0x20,(uint64_t)&timer_handler,GATE_INTERRUPT);
 }
 
-// PIT
-void init_8254(){
-    __asm__("outb %%al,$0x43"::"a"(0x36));
-    __asm__("outb %%al,$0x40"::"a"(COUNTER & 0xff));
-    __asm__("outb %%al,$0x40"::"a"(COUNTER >> 8));
-}

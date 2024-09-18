@@ -1,8 +1,8 @@
 .text
 .code64
 .globl timer_handler
-.global pf_handler
-.global system_call
+.globl pf_handler
+.globl system_call
 
 
 .macro SAVE_CONTEXT save_rax = 1
@@ -56,6 +56,9 @@ pf_handler:
 
 
 system_call:
+
+
+
     mov %rsp,tss + 20 // save user stack pointer
     mov tss + 4 , %rsp // use kernel stack pointer
     pushq tss+20
@@ -65,6 +68,9 @@ system_call:
     // base + index*scale + disp
     // scale = 8
     call *syscall_table(,%rax,8)
+
+
+
     RESTORE_CONTEXT 0
     pop %rsp
     

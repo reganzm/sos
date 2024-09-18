@@ -120,6 +120,7 @@ void schedule(){
 }
 
 void do_timer(){
+    print(ticks);
     ticks ++ ;
     // check timer
     for(struct timer* t=timer_head;t;t=t->next){
@@ -166,8 +167,7 @@ void do_timer(){
 }
 
 
-int do_sleep(uint64_t ms){
-    print("S");
+uint64_t do_sleep(long ms){
     struct timer* t = malloc(sizeof(struct timer));
     t->p = current;
     t->alarm = ticks + ms / 10;// the freq is 100Hz

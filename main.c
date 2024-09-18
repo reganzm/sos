@@ -11,8 +11,6 @@ int main(){
     interrupt_init();
     syscall_init();
 
-
-
     __asm__("sti");
 
     sched_init();

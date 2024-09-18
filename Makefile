@@ -39,23 +39,30 @@ build:build.c
 	gcc $< -o $@
 
 
+# -r relacation 
+apps/libc/libc.o:apps/libc/syscall.o
+	ld -r -o $@ $^
 
-apps/app1.bin:apps/app1.S
-	gcc -c apps/app1.S -o apps/app1.o
-	ld -Ttext=0x100000 apps/app1.o -o apps/app1.elf
+
+apps/app1.o:apps/app1.c
+	gcc -I. -c -o $@ $<
+
+apps/app1.bin:apps/libc/start.o apps/app1.o apps/libc/libc.o
+	ld -Ttext=0x100000 $^ -o apps/app1.elf
 	objcopy -O binary apps/app1.elf apps/app1.bin
 
+apps/app2.o:apps/app2.c
+	gcc -I. -c -o $@ $<
 
-apps/app2.bin:apps/app2.S
-	gcc -c apps/app2.S -o apps/app2.o
-	ld -Ttext=0x100000 apps/app2.o -o apps/app2.elf
+apps/app2.bin:apps/libc/start.o apps/app2.o apps/libc/libc.o
+	ld -Ttext=0x100000 $^ -o apps/app2.elf
 	objcopy -O binary apps/app2.elf apps/app2.bin
 
 
 .PHONY:clean run
 
 run:kernel.bin
-	lkvm run -m 512M -c 1 -k ./kernel.bin
+	lkvm run --sdl  -c 1 -k ./kernel.bin
 
 clean:
 	find -name "*.o" -o -name "*.elf" -o -name "*.bin" | xargs rm -f

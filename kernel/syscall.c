@@ -5,12 +5,12 @@
 
 // MSR registers's ids
 #define MSR_STAR            0xc0000081
-#define MSR_LSTAR           0Xc0000082
-#define MSR_SYSCALL_MASK    0XC0000084
+#define MSR_LSTAR           0xc0000082
+#define MSR_SYSCALL_MASK    0xc0000084
 #define RF_IF               0x00000200 // mask interrupt flag
 
 typedef uint64_t (*fn_ptr)();
-uint64_t do_sleep(uint64_t ms);
+uint64_t do_sleep(long ms);
 
 fn_ptr syscall_table[] = {do_sleep};
 
