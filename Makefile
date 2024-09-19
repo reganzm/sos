@@ -18,7 +18,7 @@ boot32.bin:boot32.o
 # so the instruct va is change to high address
 CFLAGS = -std=c11 -I. -fno-pic -mcmodel=kernel -fno-stack-protector -fcf-protection=none -nostdinc -fno-builtin
 
-SRCS = main.c $(wildcard mm/*.c) $(wildcard lib/*.c) $(wildcard kernel/*.c)
+SRCS = main.c $(wildcard mm/*.c) $(wildcard lib/*.c) $(wildcard kernel/*.c) $(wildcard ipc/*.c)
 OBJS = $(SRCS:.c=.o)
 
 
@@ -62,7 +62,7 @@ apps/app2.bin:apps/libc/start.o apps/app2.o apps/libc/libc.o
 .PHONY:clean run
 
 run:kernel.bin
-	lkvm run -c 1 -k ./kernel.bin
+	lkvm run --sdl -c 1 -k ./kernel.bin
 
 clean:
 	find -name "*.o" -o -name "*.elf" -o -name "*.bin" | xargs rm -f

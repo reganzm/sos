@@ -2,8 +2,11 @@
 #include "apps/libc/print.h"
 
 int main(){
+    void* m = shm_open("secret");
+
     while(1){
         print('B');
-        sleep(250);
+        print(*(char*)m);
+        sleep(1000);
     }
 }
