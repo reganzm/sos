@@ -33,10 +33,27 @@
     popq %rdi
 .endm
 
+
+system_call:
+    mov %rsp, tss + 20 // save user stack pointer
+    mov tss + 4 , %rsp // use kernel stack pointer
+    pushq tss+20
+    SAVE_CONTEXT 0
+    // * means indirect call. means this address is a addr and call again
+    // SIB + disp
+    // base + index*scale + disp
+    // scale = 8
+    call *syscall_table(,%rax,8)
+    RESTORE_CONTEXT 0
+    pop %rsp
+    sysretq
+
 timer_handler:
     SAVE_CONTEXT
+
     movb $0x20,%al
     outb %al,$0x20
+    
     call do_timer
     RESTORE_CONTEXT
     iretq
@@ -52,27 +69,3 @@ pf_handler:
     add $8,%rsp
     RESTORE_CONTEXT
     iretq
-
-
-
-system_call:
-
-
-
-    mov %rsp,tss + 20 // save user stack pointer
-    mov tss + 4 , %rsp // use kernel stack pointer
-    pushq tss+20
-    SAVE_CONTEXT 0
-    // * means indirect call. means this address is a addr and call again
-    // SIB + disp
-    // base + index*scale + disp
-    // scale = 8
-    call *syscall_table(,%rax,8)
-
-
-
-    RESTORE_CONTEXT 0
-    pop %rsp
-    
-    sysretq
-

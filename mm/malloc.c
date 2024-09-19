@@ -1,5 +1,6 @@
 #include "include/types.h"
 #include "include/mm.h"
+#include "include/print.h"
 
 struct bucket_desc{
     void* freeptr;
@@ -77,19 +78,21 @@ void* malloc(uint32_t size){
 
 
 void free(void* va){
-    uint64_t page = (uint64_t)va & ~0xfff;
+    uint64_t page = (uint64_t)va & ~0xfffUL;
 
     struct bucket_dir* bdir = bucket_dir;
     struct bucket_desc* bdesc = NULL;
+    
 
-    for(;bdir->size!=0;bdir++){
+    for(;bdir->size != 0;bdir++){
         bdesc = bdir->bdesc;
-        for(;bdesc;bdesc->next){
+        for(;bdesc;bdesc = bdesc->next){
             if((uint64_t)bdesc == page){
                 // find it
                 *((uint64_t*)va) = (uint64_t) bdesc->freeptr;
                 bdesc->freeptr = va;
                 bdesc->refcnt--;
+                
                 break;
             }
         }
@@ -116,5 +119,4 @@ void free(void* va){
         free_page(PA(bdesc));
         
     }
-
 }

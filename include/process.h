@@ -25,10 +25,11 @@ struct timer{
     struct timer* next;
     struct timer* prev;
 };
+extern uint64_t ret_from_kernel;
+extern uint64_t idle_task_entry;
+extern uint64_t task0_stack;
+
+extern struct process* current;
+
 
 void sched_init();
-extern struct process* current;
-extern uint64_t ret_from_kernel;
-extern uint64_t task0_stack;
-extern uint64_t idle_task_entry;
-

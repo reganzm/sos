@@ -45,14 +45,14 @@ apps/libc/libc.o:apps/libc/syscall.o
 
 
 apps/app1.o:apps/app1.c
-	gcc -I. -c -o $@ $<
+	gcc  -I. -c -o $@ $<
 
 apps/app1.bin:apps/libc/start.o apps/app1.o apps/libc/libc.o
 	ld -Ttext=0x100000 $^ -o apps/app1.elf
 	objcopy -O binary apps/app1.elf apps/app1.bin
 
 apps/app2.o:apps/app2.c
-	gcc -I. -c -o $@ $<
+	gcc -fno-stack-protector -I. -c -o $@ $<
 
 apps/app2.bin:apps/libc/start.o apps/app2.o apps/libc/libc.o
 	ld -Ttext=0x100000 $^ -o apps/app2.elf
@@ -62,7 +62,7 @@ apps/app2.bin:apps/libc/start.o apps/app2.o apps/libc/libc.o
 .PHONY:clean run
 
 run:kernel.bin
-	lkvm run --sdl  -c 1 -k ./kernel.bin
+	lkvm run -c 1 -k ./kernel.bin
 
 clean:
 	find -name "*.o" -o -name "*.elf" -o -name "*.bin" | xargs rm -f

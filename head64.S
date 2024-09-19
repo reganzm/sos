@@ -32,13 +32,7 @@ start64:
     // jump into main
     ret
     
-ret_from_kernel:
-    mov $USER_DS,%rax
-    movw %ax,%ds
-    movw %ax,%es
-    movw %ax,%fs
-    movw %ax,%gs
-    iretq
+
     
 gdt:
     .quad 0x0000000000000000 # reserved
@@ -51,7 +45,7 @@ gdt:
 gdt_end:
 
 idtr:
-    .word 16*256 - 1
+    .word 16*256-1
     .quad idt_table
 
 gdtr:
@@ -61,9 +55,18 @@ gdtr:
 .fill 4096,1,0
 task0_stack:
 
+ret_from_kernel:
+    mov $USER_DS,%rax
+    movw %ax,%ds
+    movw %ax,%es
+    movw %ax,%fs
+    movw %ax,%gs
+    iretq
 
 idle_task_entry:
 1:
-    sti
-    hlt
-    jmp 1b
+ sti
+ hlt
+ movb $0x20,%al
+ outb %al,$0x20
+ jmp 1b

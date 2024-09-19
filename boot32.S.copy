@@ -2,9 +2,9 @@
 .code32
 
 start32:
-    //print into serial
+    //print 'Z' into serial
     mov $0x3f8,%dx
-    mov $'P',%al
+    mov $'S',%al
     out %al,%dx
     
 
@@ -54,7 +54,7 @@ start32:
     // 1.open the 64bit model
     // enable PAE(physical address extension)
     xorl %eax,%eax
-    btsl $5,%eax
+    btsl $0x5,%eax
     movl %eax,%cr4
 
     // 2.set up page table 
@@ -74,10 +74,7 @@ start32:
 
     // 4.finaly open the CR0 PG bit
     xorl %eax,%eax
-    // enable page
     btsl $31,%eax
-    // enable protect model
-    btsl $0,%eax
     movl %eax,%cr0
 
     

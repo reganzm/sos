@@ -2,7 +2,6 @@
 #include "include/segment.h"
 #include "include/string.h"
 #include "include/process.h"
-#include "include/print.h"
 
 extern uint64_t gdt[64];
 struct tss tss;
@@ -13,6 +12,7 @@ void tss_init(){
     tss.io_bitmap[IO_BITMAP_BYTES] = ~0;
     // current process kernel stack buttom
     tss.rsp0 = current->kstack;
+    
     struct tss_desc* desc = (struct tss_desc*)&gdt[GDT_TSS_ENTRY];
     memset(desc,0,sizeof(struct tss_desc));
 

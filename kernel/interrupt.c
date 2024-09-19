@@ -2,9 +2,6 @@
 #include "include/interrupt.h"
 #include "include/string.h"
 #include "include/segment.h"
-#include "include/mm.h"
-
-
 
 #define GATE_INTERRUPT 0xe
 #define GATE_EXCEPTION 0xf
@@ -29,7 +26,7 @@ void init_8254(){
     __asm__("outb %%al,$0x40"::"a"(COUNTER >> 8));
 }
 
-static void set_gate(uint16_t index,uint64_t addr,uint8_t type){
+static void set_gate(uint8_t index,uint64_t addr,uint8_t type){
     struct gate_desc* desc = &idt_table[index];
     memset(desc,0,sizeof(struct gate_desc));
     desc->segment =  KERNEL_CS;

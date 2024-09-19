@@ -6,8 +6,7 @@
 
 start16:
     cli
-    //load gdt
-    lgdt gdtr
+
 
     // read E820 memory segment info 
     // save at pv 0x13000
@@ -22,8 +21,9 @@ e820_rd_entry:
     mov $0xe820,%eax
     mov $20,%ecx
     int $0x15
-    incb e820_nr_entry
     add $20,%di
+    incb e820_nr_entry
+
     cmp $0,%ebx
     jne e820_rd_entry
 
@@ -45,11 +45,15 @@ e820_rd_entry:
     mov $(IO_PIC+1),%dx
     out %al,%dx
 
+    //load gdt
+    lgdt gdtr
 
     //open protect model
     mov %cr0,%eax
     or $0x1,%eax
     mov %eax,%cr0
+
+
 
     //just ready , so  jump into 32bit protect model!
     //prefix l mean long jump and suffix l mean addr is 32bit
@@ -76,4 +80,4 @@ e820_nr_entry:
     .long 0
 
 e820_entry:
-    .fill 1024,1,0
+    .fill 512,1,0

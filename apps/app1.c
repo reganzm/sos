@@ -4,6 +4,6 @@
 int main(){
     while(1){
         print('A');
-        //sleep(1000);
+        sleep(500);
     }
 }
