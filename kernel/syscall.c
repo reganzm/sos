@@ -2,6 +2,7 @@
 #include "include/segment.h"
 #include "include/syscall.h"
 #include "include/process.h"
+#include "include/vesa.h"
 
 // MSR registers's ids
 #define MSR_STAR            0xc0000081
@@ -12,8 +13,10 @@
 typedef uint64_t (*fn_ptr)();
 extern uint64_t do_sleep(long ms);
 extern uint64_t do_shm(const uint8_t* name);
+extern uint64_t do_fbmap();
+extern uint64_t do_get_mode_info(struct mode_info* mode_info);
 
-fn_ptr syscall_table[] = {do_sleep, do_shm};
+fn_ptr syscall_table[] = {do_sleep, do_shm, do_fbmap, do_get_mode_info};
 
 void syscall_init(){
     uint64_t star_val = (uint64_t)USER32_CS << 48 | (uint64_t)KERNEL_CS << 32;

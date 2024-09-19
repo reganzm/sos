@@ -27,6 +27,12 @@ e820_rd_entry:
     cmp $0,%ebx
     jne e820_rd_entry
 
+    // display model
+
+    mov $vesa_model_info,%di
+    mov $0x4f01,%ax
+    int $0x01
+
 
 
     //init 8259A
@@ -81,3 +87,8 @@ e820_nr_entry:
 
 e820_entry:
     .fill 512,1,0
+
+
+.org 0x4000
+vesa_model_info:
+    .fill 256,1,0
