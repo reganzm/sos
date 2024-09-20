@@ -5,12 +5,13 @@
 #include "include/tss.h"
 #include "include/interrupt.h"
 #include "include/syscall.h"
+#include "include/vesa.h"
 
 int main(){
     mm_init();
     interrupt_init();
     syscall_init();
-
+    vesa_init();
     __asm__("sti");
 
     sched_init();

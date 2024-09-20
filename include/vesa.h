@@ -5,7 +5,7 @@
 #include "include/types.h"
 
 struct vesa_mode_info{
-    uint8_t pad9[18];
+    uint8_t pad0[18];
     uint16_t hres;
     uint16_t vres;
 

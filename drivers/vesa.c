@@ -1,15 +1,19 @@
-#pragma once
 #include "include/vesa.h"
 #include "include/string.h"
 #include "include/mm.h"
 #include "include/process.h"
+#include "include/print.h"
 
 struct vesa_mode_info* vesa_mode_info;
 
 void vesa_init(){
     vesa_mode_info = malloc(sizeof(struct vesa_mode_info));
     // kvmtool default load addre 10000 , add mode save address
-    memcpy(vesa_mode_info,(uint8_t*)0x14000,sizeof(struct vesa_mode_info));
+    memcpy(vesa_mode_info,(char*)0x14000,sizeof(struct vesa_mode_info));
+    print(vesa_mode_info->hres);
+    print(vesa_mode_info->vres);
+    print(vesa_mode_info->bpp);
+    print(vesa_mode_info->fbbase);
 }
 
 uint64_t do_get_mode_info(struct mode_info* mode_info){
@@ -17,13 +21,13 @@ uint64_t do_get_mode_info(struct mode_info* mode_info){
     mode_info->hres = vesa_mode_info->hres;
     mode_info->vres = vesa_mode_info->vres;
     mode_info->bpp = vesa_mode_info->bpp;
-    return 0UL;
+    return 0;
 }
 
 uint64_t do_fbmap(){
     uint64_t va = 0xe000000;
     uint64_t pa = vesa_mode_info->fbbase;
     int size = vesa_mode_info->hres * vesa_mode_info->vres *vesa_mode_info->bpp / 8;
-    map_range(current->pml4,va,pa,0x4,size / PAGE_SIZE);
+    map_range(current->pml4,va,pa,0x4,(size+PAGE_SIZE-1) / PAGE_SIZE);
     return va;
 }

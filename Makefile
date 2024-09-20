@@ -19,6 +19,7 @@ boot32.bin:boot32.o
 CFLAGS = -std=c11 -I. -fno-pic -mcmodel=kernel -fno-stack-protector -fcf-protection=none -nostdinc -fno-builtin
 
 SRCS = main.c $(wildcard mm/*.c) $(wildcard lib/*.c) $(wildcard kernel/*.c) $(wildcard ipc/*.c) $(wildcard drivers/*.c)
+
 OBJS = $(SRCS:.c=.o)
 
 
@@ -43,18 +44,26 @@ build:build.c
 apps/libc/libc.o:apps/libc/syscall.o
 	ld -r -o $@ $^
 
+apps/libdraw/libdraw.o:apps/libdraw/draw.o apps/libdraw/fonts.o
+	ld -r -o $@ $^
+
+apps/libdraw/draw.o:apps/libdraw/draw.c
+	gcc -I. -c -o $@ $^
+
+apps/libdraw/fonts.o:apps/libdraw/fonts.c
+	gcc -I. -c -o $@ $^
 
 apps/app1.o:apps/app1.c
 	gcc  -I. -c -o $@ $<
 
-apps/app1.bin:apps/libc/start.o apps/app1.o apps/libc/libc.o
+apps/app1.bin:apps/libc/start.o apps/app1.o apps/libc/libc.o apps/libdraw/libdraw.o
 	ld -Ttext=0x100000 $^ -o apps/app1.elf
 	objcopy -O binary apps/app1.elf apps/app1.bin
 
 apps/app2.o:apps/app2.c
 	gcc -fno-stack-protector -I. -c -o $@ $<
 
-apps/app2.bin:apps/libc/start.o apps/app2.o apps/libc/libc.o
+apps/app2.bin:apps/libc/start.o apps/app2.o apps/libc/libc.o apps/libdraw/libdraw.o
 	ld -Ttext=0x100000 $^ -o apps/app2.elf
 	objcopy -O binary apps/app2.elf apps/app2.bin
 
