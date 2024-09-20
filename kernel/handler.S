@@ -3,6 +3,7 @@
 .globl timer_handler
 .globl pf_handler
 .globl system_call
+.globl kb_handler
 
 
 .macro SAVE_CONTEXT save_rax = 1
@@ -58,6 +59,15 @@ timer_handler:
     RESTORE_CONTEXT
     iretq
 
+kb_handler:
+  SAVE_CONTEXT
+
+  call process_kb
+
+  movb $0x20,%al
+  outb %al,$0x20
+  RESTORE_CONTEXT
+  iretq
     
 
 pf_handler:

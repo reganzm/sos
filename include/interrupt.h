@@ -7,3 +7,4 @@ void interrupt_init();
 
 void timer_handler();
 void pf_handler();
+void kb_handler();

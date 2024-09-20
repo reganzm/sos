@@ -42,5 +42,6 @@ static void set_gate(uint8_t index,uint64_t addr,uint8_t type){
 void interrupt_init(){
     set_gate(14,(uint64_t)&pf_handler,GATE_EXCEPTION);
     set_gate(0x20,(uint64_t)&timer_handler,GATE_INTERRUPT);
+    set_gate(0x21,(uint64_t)&kb_handler,GATE_INTERRUPT);
 }
 
